@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TimeMaster Learning Suite</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+            font-family: 'Arial', sans-serif;
+        }
+
+        #clock {
+            font-size: 2em;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="clock"></div>
+    <script>
+        // Configuration
+        const NANOSECOND_TO_MS = 1e6; // 1 millisecond = 1,000,000 nanoseconds
+        const TRANSITION_TIME = 20000; // 20 seconds before transition
+        const TRANSITION_TO_MINUTE = 60000; // Transition to minutes after 60 seconds
+
+        // DOM Elements
+        const clockElement = document.getElementById('clock');
+
+        // Start time in nanoseconds
+        let startTime = performance.now() * NANOSECOND_TO_MS;
+
+        function updateClock() {
+            let now = performance.now() * NANOSECOND_TO_MS;
+            let elapsedTime = now - startTime;
+
+            if (elapsedTime < TRANSITION_TIME) {
+                // Display in nanoseconds
+                clockElement.textContent = `${Math.floor(elapsedTime)} nanoseconds`;
+            } else if (elapsedTime < TRANSITION_TO_MINUTE) {
+                // Display in milliseconds after 20 seconds
+                clockElement.textContent = `${Math.floor(elapsedTime / 1e6)} milliseconds`;
+            } else {
+                // Transition to display in minutes
+                let minutes = Math.floor(elapsedTime / 60e9);
+                let seconds = Math.floor((elapsedTime % 60e9) / 1e9);
+                clockElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')} minutes`;
+            }
+            
+            requestAnimationFrame(updateClock);
+        }
+
+        // Start the clock
+        updateClock();
+    </script>
+</body>
+</html>
